@@ -13,38 +13,34 @@
 #define rall(v) v.rbegin(),v.rend()
 #define clr(v,d) memset(v,d,sizeof(v));
 #define cceil(a,b) (a+b-1)/b
-#define inf (1<<31)-1
-#define int ll
 #define fix(a,b) (a%b+b)%b
+#define ishowspeed ios_base::sync_with_stdio(false);    cin.tie();    cout.tie();
+using int64 = ll;
 using namespace std;
-const int mod = 1e9+7;
-int n;
-vector<string>s;
-void back(int i,string str="")
-{
-    if (i == n) {
-        s.pb(str);
-        return;
-    }
-    back(i+1,str+'0');
-    back(i+1,str+'1');
-}
+const ll mod = 1e9+7, OO = 0x3f3f3f3f3f3f3f;
 
 void solve()
 {
-    
+    ll a,b,k;
+    cin >> a >> b >> k;
+    if (k >= max(a,b)) return void(cout << 1); // ok
+    if (__gcd(a,b) == 1) cout << 2;
+    else {
+        ll x = b/gcd(a,b);
+        ll y = a/gcd(a,b);
+        if (k >= max(x,y)) cout << 1;
+        else cout << 2;
+    }
 }
 
-signed main()
+int main()
 {
-    ios_base::sync_with_stdio(false);
-    cin.tie();
-    cout.tie();
+    ishowspeed
     int tc = 1;
     cin >> tc;
     while(tc--)
     {
         solve();
-        // cout << el;
+        cout << el;
     }
 }

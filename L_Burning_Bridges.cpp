@@ -18,64 +18,59 @@
 using int64 = ll;
 using namespace std;
 const ll mod = 1e9+7, OO = 0x3f3f3f3f3f3f3f;
-const int N = 1e6+4;
-vector<int>adj[N];
-int lowlink[N],dfn[N];
+const int N = 1e4+6;
+int dfn[N],lowlink[N];
 int ndfn = 1;
-set<pair<int,int>>bridges;
-void init(int n) {
-    clr(lowlink,0);
-    clr(dfn,-1);
-    for(int i=0;i<n;++i) {
-        adj[i].clear();
-    }
-    bridges.clear();
-    ndfn = 1;
-}
-void tarjan(int node, int par) {
+vector<int>adj[N];
+set<int>bridge;
+map<pair<int,int>,int>mp,frq;
+void tarjan(int node,int par) {
     lowlink[node] = dfn[node] = ndfn++;
     for (int ch : adj[node]) {
         if (dfn[ch] == -1) {
             tarjan(ch,node);
             lowlink[node] = min(lowlink[node], lowlink[ch]);
-        }
-        else if (ch != par) {
+            if (frq[{min(ch,node),max(ch,node)}] == 1 && lowlink[ch] > dfn[node]) {
+                bridge.insert(mp[{node, ch}]);
+            }
+        } else if(ch != par) {
             lowlink[node] = min(lowlink[node], dfn[ch]);
         }
     }
-    if (par != -1 && lowlink[node] == dfn[node]) {
-        int x = min(par,node);
-        int y = max(par,node);
-        bridges.insert({x,y});
-    }
 }
 
+void solve()
+{
+    clr(dfn,-1);
+    int n,m;
+    cin >> n >> m;
+    int ID = 1;
+    for (int i=0;i<m;++i) {
+        int u,v;
+        cin >> u >> v;
+        mp[{u,v}] = ID;
+        mp[{v,u}] = ID++;
+        frq[{min(u,v), max(u,v)}]++;
+        adj[u].pb(v);
+        adj[v].pb(u);
+    }
+    for (int i=1;i<=n;++i) {
+        if (dfn[i] == -1) tarjan(i,-1);
+    }
+    cout << bridge.size() << el;
+    for (auto i : bridge) cout << i << ' ';
+}
 
 int main()
 {
+    freopen("bridges.in", "r", stdin);
+    freopen("bridges.out", "w", stdout);
     ishowspeed
-    int n;
-    while(cin >> n)
+    int tc = 1;
+    // cin >> tc;
+    while(tc--)
     {
-        init(n);
-        for (int i=0;i<n;++i) {
-            int node,m,x;
-            cin >> node;
-            char temp;
-            cin >> temp >> m >> temp;
-            for (int j=0;j<m;++j) {
-                cin >> x;
-                adj[node].pb(x);
-                adj[x].pb(node);
-            }
-        }
-        for (int i=0;i<n;++i) {
-            if (dfn[i] == -1) tarjan(i,-1);
-        }
-        cout << bridges.size() << " critical links\n";
-        for (auto [x,y] : bridges) {
-            cout << x << " - " << y << el; 
-        }
+        solve();
         cout << el;
     }
 }
